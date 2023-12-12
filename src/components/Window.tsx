@@ -27,9 +27,8 @@ function Window({left, top, width, height, id, select, app, close, zIndex}: wind
       height: height,
       zIndex: zIndex
     }}>
-      <div className='h-[20px] w-full bg-gray-900 rounded-t-lg flex flex-row items-center px-2 space-x-2' onMouseDown={(e) => select(e, id)}>
-          <div className='h-3 w-3 bg-red-400 rounded-full' onClick={() => close(id)}/>
-          <div className='h-3 w-3 bg-green-400 rounded-full'/>
+      <div className='h-[20px] w-full bg-gray-800 rounded-t-lg flex flex-row items-center px-2 space-x-2' onMouseDown={(e) => select(e, id)}>
+          <div className='h-3 w-3 bg-red-400 rounded-full hover:bg-red-600' onClick={() => close(id)}/>
       </div>
       <app.component/>
     </div>

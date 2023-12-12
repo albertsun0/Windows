@@ -61,13 +61,11 @@ function Desktop() {
   const mouseDown = (e:MouseEvent) => {}
 
   const setDragWindow = (e:React.MouseEvent<HTMLDivElement, MouseEvent>, i:number) =>{
-    console.log("select", i );
     const mouseX = e.clientX;
     const mouseY = e.clientY;
     const index = windows.findIndex((window) => {
       return window.id === i;
     })
-    console.log(windows, index)
     const offsetX = mouseX - windows[index].left;
     const offsetY = mouseY - windows[index].top;
     setSelectOffset({x: offsetX, y: offsetY});
@@ -81,6 +79,8 @@ function Desktop() {
     setnextZIndex(nextZIndexRef.current + 1);
     setSelectID(i);
   }
+
+ 
   const mouseUp = (e:MouseEvent) => {
     e.preventDefault();
     console.log("mouseup");
@@ -89,11 +89,7 @@ function Desktop() {
 
   const mouseMove = (e:MouseEvent) => {
     e.preventDefault();
-    
     if(selectedIDRef.current !== -1){
-      console.log("moving windows");
-      console.log(e.x, e.y);
-      console.log(desktopHeight, desktopWidth)
       const newWindows:window[] = windowsRef.current.map((window) => {
         if(window.id === selectedIDRef.current){
           let l = Math.min(e.x - selectOffsetRef.current.x, desktopWidth - window.width);
@@ -104,7 +100,6 @@ function Desktop() {
         }
         return window;
       })
-      console.log(newWindows);
       setWindows(newWindows);
     } 
   }
