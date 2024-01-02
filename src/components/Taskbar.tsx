@@ -24,7 +24,7 @@ type taskbarItemProps = {
 function TaskBarItem({ Icon, onClick }: taskbarItemProps) {
   return (
     <div
-      className="hover:bg-gray-900/90 rounded-md p-1 cursor-pointer"
+      className="hover:bg-gray-900/90 rounded-md p-1 cursor-pointer bg-gray-800 after:bg-black"
       onClick={onClick}
     >
       <Icon className="w-8 h-8 stroke-gray-200 stroke-[1.5px]" />
