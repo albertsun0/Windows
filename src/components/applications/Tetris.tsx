@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 /*
     Tetris grid
@@ -8,7 +8,11 @@ import React, { useState, useEffect } from "react";
 */
 
 function Tetris() {
-  const [board, setBoard] = useState<number[][]>([
+  const placedBlock = 1;
+  const movingBlock = 2;
+  const empty = 0;
+
+  const [board, _setBoard] = useState<number[][]>([
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 0 = empty
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 1 = placed
     [0, 0, 0, 0, 2, 2, 0, 0, 0, 0], // 2 = current piece
@@ -35,17 +39,26 @@ function Tetris() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 20 rows on tetris board
   ]);
 
+  const boardRef = useRef(board);
+
+  const setBoard = (data: number[][]) => {
+    boardRef.current = data;
+    _setBoard(data);
+  };
+
   // check if a tile can move in specified direction
-  const checkCanMove = (dr: number, dc: number) => {
-    for (let r = 0; r < board.length; r++) {
-      for (let c = 0; c < board[0].length; c++) {
-        if (board[r][c] == 2) {
+  const checkCanMove = (dr: number, dc: number, curBoard: number[][]) => {
+    let hasBlock = false;
+    for (let r = 0; r < curBoard.length; r++) {
+      for (let c = 0; c < curBoard[0].length; c++) {
+        if (curBoard[r][c] === 2) {
+          hasBlock = true;
           if (
             !(
-              r + dr < board.length &&
-              c + dc < board[0].length &&
+              r + dr < curBoard.length &&
+              c + dc < curBoard[0].length &&
               c + dc >= 0 &&
-              board[r + dr][c + dc] !== 1
+              curBoard[r + dr][c + dc] !== 1
             )
           ) {
             return false;
@@ -53,11 +66,11 @@ function Tetris() {
         }
       }
     }
-    return true;
+    return hasBlock;
   };
 
-  const moveBlocks = (dr: number, dc: number) => {
-    let newBoard = board.map((arr) => {
+  const moveBlocks = (dr: number, dc: number, curBoard: number[][]) => {
+    let newBoard = curBoard.map((arr) => {
       return arr.map((i) => {
         if (i === 2) {
           return 0;
@@ -66,9 +79,9 @@ function Tetris() {
       });
     });
 
-    for (let r = 0; r < board.length; r++) {
-      for (let c = 0; c < board[0].length; c++) {
-        if (board[r][c] === 2) {
+    for (let r = 0; r < curBoard.length; r++) {
+      for (let c = 0; c < curBoard[0].length; c++) {
+        if (curBoard[r][c] === 2) {
           newBoard[r + dr][c + dc] = 2;
         }
       }
@@ -76,12 +89,26 @@ function Tetris() {
     return newBoard;
   };
 
+  const spawnBlock = (b: number[][]) => {
+    let newBoard = b.map((row, r) => {
+      return row.map((i, c) => {
+        if (r === 3 && c === 4) {
+          return movingBlock;
+        }
+        return i;
+      });
+    });
+    return newBoard;
+  };
+
   const placeBlocks = () => {
-    //drop blocks until cannot anymore.
-    while (checkCanMove(1, 0)) {
-      setBoard(moveBlocks(1, 0));
+    //drop blocks
+    let b = boardRef.current;
+    while (checkCanMove(1, 0, b)) {
+      console.log("loop");
+      b = moveBlocks(1, 0, b);
     }
-    let newBoard = board.map((arr) => {
+    let newBoard = b.map((arr) => {
       return arr.map((i) => {
         if (i === 2) {
           return 1;
@@ -89,24 +116,31 @@ function Tetris() {
         return i;
       });
     });
+    newBoard = spawnBlock(newBoard);
     setBoard(newBoard);
   };
 
   const tick = () => {
+    console.log("tick");
     // check that we can move down
-    let canDrop = checkCanMove(1, 0);
-    if (!canDrop) {
-      placeBlocks();
-    } else {
-      let newBoard = moveBlocks(1, 0);
+    let canDrop = checkCanMove(1, 0, boardRef.current);
+    if (canDrop) {
+      let newBoard = moveBlocks(1, 0, boardRef.current);
       setBoard(newBoard);
+    } else {
+      placeBlocks();
     }
+    setTimeout(tick, 500);
+  };
+
+  const startGame = () => {
+    const intervalID = setTimeout(tick, 500);
   };
 
   const moveWithKey = (dr: number, dc: number) => {
-    let canMove = checkCanMove(dr, dc);
+    let canMove = checkCanMove(dr, dc, board);
     if (canMove) {
-      let newBoard = moveBlocks(dr, dc);
+      let newBoard = moveBlocks(dr, dc, board);
       setBoard(newBoard);
     }
   };
@@ -138,19 +172,20 @@ function Tetris() {
     };
   });
 
-  const place = () => {};
-
   const [currentPiece, setCurrentPiece] = useState<number>(0);
 
   const getColor = (value: number, row: number, col: number) => {
     if (value === 0) {
-      return (row + col) % 2 === 0 ? "bg-gray-900" : "bg-black";
+      return (row + col) % 2 === 0 ? "bg-gray-800" : "";
+    }
+    if (value === 2) {
+      return "bg-blue-400";
     }
     return "bg-orange-400";
   };
 
   return (
-    <div className="bg-black w-full h-full flex flex-row text-white font-mono p-4">
+    <div className="w-full h-full flex flex-row text-white font-mono p-4">
       <div className="flex flex-col">
         {board.map((row, ri) => {
           if (ri > 3)
@@ -165,8 +200,14 @@ function Tetris() {
             );
         })}
       </div>
-      <div className="px-4">
-        <button onClick={tick}>tick</button>
+      <div className="px-4 text-sm text-gray-200 space-y-2">
+        <div>00000000</div>
+        <div
+          onClick={startGame}
+          className="border border-gray-400 px-1 hover:cursor-pointer"
+        >
+          Press Start
+        </div>
       </div>
     </div>
   );

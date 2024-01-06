@@ -43,7 +43,7 @@ function Window({
       onMouseDown={(e) => focus(id)}
     >
       <div
-        className="h-[20px] w-full bg-gray-800 rounded-t-lg flex flex-row items-center px-2 space-x-2"
+        className="h-[20px] w-full  rounded-t-lg flex flex-row items-center px-2 space-x-2"
         onMouseDown={(e) => {
           select(e, id);
           e.stopPropagation();
