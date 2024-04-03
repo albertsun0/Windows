@@ -58,6 +58,8 @@ function Desktop() {
     _setSelectOffset(data);
   };
 
+  const [focusedWindow, setFocusedWindow] = useState(-1);
+
   const mouseDown = (e: MouseEvent) => {};
 
   const focusWindow = (i: number) => {
@@ -69,6 +71,7 @@ function Desktop() {
     });
     setWindows(newWindows);
     setnextZIndex(nextZIndexRef.current + 1);
+    setFocusedWindow(i);
   };
 
   const setDragWindow = (
@@ -120,8 +123,8 @@ function Desktop() {
     const newWindow: window = {
       left: 0,
       top: 0,
-      width: 300,
-      height: 300,
+      width: 500,
+      height: 400,
       zindex: nextZIndexRef.current,
       app: app,
       id: nextIDRef.current,
@@ -130,6 +133,7 @@ function Desktop() {
     setnextZIndex(nextZIndexRef.current + 1);
     const newWindows: window[] = [...windowsRef.current, newWindow];
     setWindows(newWindows);
+    focusWindow(newWindow.id);
   };
 
   const closeApplication = (id: number) => {
@@ -153,10 +157,11 @@ function Desktop() {
   }, []);
 
   return (
-    <div className="w-screen h-screen bg-gradient-to-r from-green-950 to-fuchsia-950 overflow-hidden">
+    <div className="w-screen h-screen bg-gradient-to-r from-blue-950 to-fuchsia-950 overflow-hidden">
       {windows.map((currentWindow) => {
         return (
           <Window
+            isFocused={currentWindow.id === focusedWindow}
             left={currentWindow.left}
             top={currentWindow.top}
             width={currentWindow.width}
@@ -184,5 +189,4 @@ export default Desktop;
     on mouse down - find top window that it is overlapping, move it to top of the window array
     if continued mouse down - transform window based on mouse offset from original position
     on mouse up - save state
-    
 */

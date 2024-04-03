@@ -10,6 +10,7 @@ import React, { useState, useEffect, useRef } from "react";
 function Tetris() {
   const placedBlock = 1;
   const movingBlock = 2;
+  const pivot = 3;
   const empty = 0;
 
   const [board, _setBoard] = useState<number[][]>([

@@ -16,6 +16,7 @@ type windowProps = {
   close: (id: number) => void;
   zIndex: number;
   focus: (id: number) => void;
+  isFocused: boolean;
 };
 
 function Window({
@@ -29,10 +30,14 @@ function Window({
   close,
   zIndex,
   focus,
+  selectedId,
+  isFocused,
 }: windowProps) {
   return (
     <div
-      className={`absolute bg-gray-900/40 backdrop-blur rounded-lg overflow-hidden border-1 border-white`}
+      className={`absolute bg-gray-900/40 backdrop-blur rounded-lg overflow-hidden border border-gray-800 ${
+        isFocused && "border-gray-600"
+      }`}
       style={{
         left: left,
         top: top,
@@ -53,8 +58,10 @@ function Window({
           className="h-3 w-3 bg-red-400 rounded-full hover:bg-red-600"
           onClick={() => close(id)}
         />
+        <div className="grow text-center text-gray-300 text-sm">{app.name}</div>
+        <div className="h-3 w-3" />
       </div>
-      <app.component />
+      <app.component focus={isFocused} />
     </div>
   );
 }
