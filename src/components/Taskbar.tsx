@@ -39,7 +39,7 @@ function Taskbar({ height, openApplication }: taskbarProps) {
       style={{ height: height }}
     >
       <div className="backdrop-blur bg-gray-900/60 rounded-md px-4 h-full items-center flex flex-row space-x-2">
-        <TaskBarItem onClick={() => {}} Icon={TbGridDots} />
+        {/* <TaskBarItem onClick={() => {}} Icon={TbGridDots} /> */}
         {pinnedApps.map((app, i) => {
           return (
             <TaskBarItem onClick={() => openApplication(app)} Icon={app.icon} />

@@ -3,7 +3,7 @@ import Window from "./Window";
 import { useState, useEffect, useRef } from "react";
 import Taskbar from "./Taskbar";
 import { applications, applicationType } from "./applications/directory";
-import { notepad } from "./applications/directory";
+import { about } from "./applications/directory";
 type window = {
   left: number;
   top: number;
@@ -120,11 +120,21 @@ function Desktop() {
   };
 
   const openApplication = (app: applicationType) => {
+    let width = 500;
+    let height = 400;
+    if (app.size === "fullscreen") {
+      width = desktopWidth;
+      height = desktopHeight - taskbarHeight;
+    }
+    if (app.size === "medium") {
+      width = desktopWidth / 3;
+      height = (desktopHeight - taskbarHeight) / 1.5;
+    }
     const newWindow: window = {
-      left: 0,
-      top: 0,
-      width: 500,
-      height: 400,
+      left: desktopWidth / 2 - width / 2,
+      top: (desktopHeight - taskbarHeight) / 2 - height / 2,
+      width: width,
+      height: height,
       zindex: nextZIndexRef.current,
       app: app,
       id: nextIDRef.current,
@@ -174,6 +184,7 @@ function Desktop() {
             zIndex={currentWindow.zindex}
             key={currentWindow.id}
             focus={focusWindow}
+            openApp={openApplication}
           />
         );
       })}

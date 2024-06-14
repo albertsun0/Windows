@@ -17,6 +17,7 @@ type windowProps = {
   zIndex: number;
   focus: (id: number) => void;
   isFocused: boolean;
+  openApp: (app: applicationType) => void;
 };
 
 function Window({
@@ -32,6 +33,7 @@ function Window({
   focus,
   selectedId,
   isFocused,
+  openApp,
 }: windowProps) {
   return (
     <div
@@ -61,7 +63,7 @@ function Window({
         <div className="grow text-center text-gray-300 text-sm">{app.name}</div>
         <div className="h-3 w-3" />
       </div>
-      <app.component focus={isFocused} />
+      <app.component focus={isFocused} openApp={openApp} />
     </div>
   );
 }

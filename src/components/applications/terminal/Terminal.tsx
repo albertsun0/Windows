@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { appComponentProps } from "../directory";
 import { validInput, evaluateCommand } from "./TerminalUtils";
-function Terminal({ focus }: appComponentProps) {
+
+function Terminal({ focus, openApp }: appComponentProps) {
   const PATH = "AOS~";
-  const [log, _setLog] = useState(["AOS 1.01"]);
+  const [log, _setLog] = useState(["AOS 1.01. Try 'help'"]);
   const logRef = useRef(log);
   const setLog = (data: string[]) => {
     logRef.current = data;
@@ -32,7 +33,7 @@ function Terminal({ focus }: appComponentProps) {
 
   const submitCommand = () => {
     let cmd = PATH + textRef.current;
-    let res = evaluateCommand(textRef.current);
+    let res = evaluateCommand(textRef.current, openApp);
     if (textRef.current === "") {
       setLog([...logRef.current, cmd]);
       return;
@@ -42,7 +43,6 @@ function Terminal({ focus }: appComponentProps) {
 
   const editText = (e: KeyboardEvent) => {
     if (!focusRef.current) return;
-
     const val = e.key;
     const curString = textRef.current;
     let newString = curString;
@@ -69,6 +69,7 @@ function Terminal({ focus }: appComponentProps) {
       window.removeEventListener("keydown", editText);
     };
   }, []);
+
   return (
     <div className="flex flex-col text-white text-sm font-mono p-2 h-full pb-96 overflow-y-scroll">
       <div className="flex flex-col">
