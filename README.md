@@ -1,8 +1,10 @@
-# Getting Started with Create React App
+# AOS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+https://albertsun0.github.io/Windows
 
-## Available Scripts
+Web based desktop UI/Portfolio. Built in React + Typescript.
+
+## Running and Deploying
 
 In the project directory, you can run:
 
